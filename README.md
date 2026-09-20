@@ -1,48 +1,46 @@
-# ESP32-P4 多模态 AI 机器人
+# Vela-WALL·E 多模态 AI 机器人
 
-## 项目演示
+## 一、作品简介
 
-本项目基于 ESP32-P4 开发，实现视觉感知、语音交互、AI 对话和机器人表情/动作控制。
+Vela-WALL·E 是一款基于 ESP32-P4 的多模态 AI 机器人，集成语音聆听、语音识别、AI 对话、语音合成、摄像头视觉感知、LVGL 图形界面和 STM32 舵机控制。
 
-### Bilibili 演示视频
+机器人通过屏幕上的麦克风按钮开始聆听，再次点击后结束录音并识别已经采集的内容；AI 进入思考、回答等状态时，P4 通过 UART 向 STM32 发送动作指令，控制 MG3115 和 MG995 舵机完成回中、抬头、点头等动作。
 
-[点击观看项目演示视频](https://www.bilibili.com/video/BV1CQez66EQK)
+项目亮点：
 
----
+- 基于 ESP32-P4 Function EV Board，使用 OpenVela/ESP-IDF 软件环境；
+- 支持语音识别、DeepSeek 对话和 SiliconFlow 语音合成；
+- 支持摄像头、人脸检测、行人检测和机器人眼睛表情；
+- P4 与 STM32 通过自定义二进制 UART 协议通信；
+- STM32 使用 TIM3 PWM 控制双舵机，并保留电机控制能力；
+- API 密钥不再写入源码，改为运行时从 NVS 读取。
 
-# contest2026_428_zhipeihuangdi
+## 二、选题方向
 
-👋 欢迎参加 **2026 首届 openvela AI 硬件开发者大赛**！
+AI 硬件产品创新。
 
-这是组委会为你的队伍创建的**专属参赛仓库**（本仓为样例/模板，队伍编号 `428`；你看到的将是你自己的 `contest2026_<编号>_<队伍名>`）。比赛期间，你的全部参赛代码、打包产物与 AI Coding 日志都提交到这里。
+本作品面向具备视觉、听觉和运动能力的桌面机器人，尝试将端侧显示、语音交互、云端大模型和底层执行机构组合成完整的自然交互设备。ESP32-P4 负责图形界面、视觉和 AI 交互，STM32 负责实时 UART 指令解析、电机和舵机控制，形成分工明确的双芯片架构。
 
-> 本仓既是「代码仓」，又内置了一键拉取整套 openvela 工程的 `repo` 清单（manifest）。你只需跟它打交道，**自始至终只动一个文件夹**。
+## 三、目录结构
 
----
+- `app/hello_app/` — ESP32-P4 应用工程，包含主程序、界面、语音、视觉和硬件功能组件。
+- `app/hello_app/main/` — ESP32-P4 应用入口、LVGL 初始化和系统启动代码。
+- `app/hello_app/components/apps/` — 机器人应用集合，包括语音交互、摄像头、眼睛表情、设置、音乐和 2048 等应用。
+- `app/hello_app/components/apps/network_test/` — 语音识别、DeepSeek 对话、TTS 播放和交互状态机。
+- `app/hello_app/components/robot_uart/` — P4 与 STM32 的 UART 二进制协议、心跳、电机、舵机和动作指令。
+- `app/hello_app/components/api_key_store/` — API 密钥 NVS 存储接口，避免密钥直接写入源码。
+- `app/hello_app/components/provisioning/` — API 密钥配置相关组件。
+- `app/hello_app/components/human_face_detect/` — ESP32-P4 人脸检测模型和调用接口。
+- `app/hello_app/components/pedestrian_detect/` — ESP32-P4 行人检测模型和调用接口。
+- `app/hello_app/spiffs/` — SPIFFS 文件系统资源，包括界面资源和语音临时文件。
+- `board/contest_board/` — openvela 板级适配目录，目前保留比赛工程的板级适配骨架。
+- `quickapp/` — 快应用目录，目前未作为本作品的主要运行入口。
+- `logs/` — Codex 和 OpenCode 的 AI Coding 日志，包含 `manifest.json` 和按日期归档的 JSONL 会话记录。
+- `contest2026_428_zhipeihuangdi.xml` — repo 工程清单，负责映射应用、快应用和板级适配目录。
 
-## 一、先读这些官方文档
+## 四、运行方式
 
-**通用（所有赛道必读）：**
-
-| 文档                                                                                                                                     | 用途                                           |
-| ---------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------- |
-| [《大赛总览》](https://github.com/open-vela/docs/blob/dev-ai-contest-2026/zh-cn/contest_2026/contest_overview.md)                        | 赛道、流程、评分、资源，建议先通读             |
-| [《参赛代码提交指南》](https://github.com/open-vela/docs/blob/dev-ai-contest-2026/zh-cn/contest_2026/code_submission_guide.md)           | 仓库获取、提交流程、时间与权限（**以此为准**） |
-| [《AI Coding 日志归集与提交手册》](https://github.com/open-vela/docs/blob/dev-ai-contest-2026/zh-cn/contest_2026/ai_coding_log_guide.md) | 如何导出 AI 对话日志并提交到 `logs/`           |
-
-**按你的赛道选读（三选一）：**
-
-| 赛道                  | 教程导航                                                                                                                                                 |
-| --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 快应用 / 手表应用创新 | [快应用教程导航](https://github.com/open-vela/docs/blob/dev-ai-contest-2026/zh-cn/contest_2026/quickapp/quickapp_guide_index.md)                         |
-| AI 硬件产品创新       | [AI 硬件赛道教程导航](https://github.com/open-vela/docs/blob/dev-ai-contest-2026/zh-cn/contest_2026/ai_hardware/ai_hardware_guide_index.md)              |
-| 新硬件适配            | [新硬件适配赛道教程导航](https://github.com/open-vela/docs/blob/dev-ai-contest-2026/zh-cn/contest_2026/hardware_porting/hardware_porting_guide_index.md) |
-
----
-
-## 二、第一步：拉取完整工程
-
-用组委会提供的命令一键拉取「openvela 全量源码 + 你的专属仓」：
+### 1. 获取工程
 
 ```bash
 repo init -u https://github.com/open-vela/contest2026_428_zhipeihuangdi \
@@ -50,111 +48,75 @@ repo init -u https://github.com/open-vela/contest2026_428_zhipeihuangdi \
 repo sync -c -j8
 ```
 
-同步后，你的整个仓库位于工作区的 `contest2026_428_zhipeihuangdi/`，openvela 全量源码在外层（`nuttx/`、`apps/`、`packages/`、`vendor/` 等）。
+同步完成后，参赛仓目录为 `contest2026_428_zhipeihuangdi/`，ESP32-P4 应用位于 `app/hello_app/`。
 
----
+### 2. 准备 ESP-IDF 环境
 
-## 三、第二步：在哪里写代码
-
-**只在自己的仓目录 `contest2026_428_zhipeihuangdi/` 里开发。** 不同作品形态放在对应子目录，manifest 会通过 `<linkfile>` 把它们**软链**到 openvela 编译树该在的位置——你不用手动 copy：
-
-| 作品形态 | 你的代码放这里             | 系统自动映射到                                 |
-| -------- | -------------------------- | ---------------------------------------------- |
-| 应用     | `app/hello_app/`           | `packages/demos/contest2026_428_hello_app`     |
-| 快应用   | `quickapp/hello_quickapp/` | `packages/apps/contest2026_428_hello_quickapp` |
-| 板级适配 | `board/contest_board/`     | `vendor/openvela/boards/contest2026_428_board` |
-
-> 用不到的形态目录可以删掉；新增作品时按同样规则加子目录，并在 `contest2026_428_zhipeihuangdi.xml` 里补一条 `<linkfile>` 映射即可。**生产仓库（packages/nuttx/vendor 等）零改动。**
-
-建议仓库目录约定（便于评委定位）：
-
-```text
-app/ | quickapp/ | board/   # 你的作品代码
-logs/                       # AI Coding 日志（主动导出后提交，格式见 logs/README.md）
-README.md                   # 作品说明（提交前请改成你自己的，见第六节）
-```
-
-> 仓内附带了一个 `.gitignore.example`，给出了**编译产物**等不需要进仓的文件示例。如需启用，`cp .gitignore.example .gitignore` 后按需增删即可。**注意 `logs/` 下最终导出的 AI Coding 日志必须提交，不要忽略。**
->
-> `logs/` 的目录结构与提交格式见 [logs/README.md](logs/README.md)。
-
----
-
-## 四、第三步：编译与运行
-
-编译/运行步骤随作品形态不同而不同，请参考你所在赛道的教程导航：
-
-- 快应用 / 手表应用：[快应用教程导航](https://github.com/open-vela/docs/blob/dev-ai-contest-2026/zh-cn/contest_2026/quickapp/quickapp_guide_index.md)（含模拟器与开发板部署）。
-- AI 硬件产品创新：[AI 硬件赛道教程导航](https://github.com/open-vela/docs/blob/dev-ai-contest-2026/zh-cn/contest_2026/ai_hardware/ai_hardware_guide_index.md)（环境搭建、编译烧录、Skill 开发）。
-- 新硬件适配：[新硬件适配赛道教程导航](https://github.com/open-vela/docs/blob/dev-ai-contest-2026/zh-cn/contest_2026/hardware_porting/hardware_porting_guide_index.md)（BSP 移植、最小 NSH 基线）。
-
-子目录已通过 manifest 中的 `<linkfile>` 软链进 openvela 编译树，因此构建在 openvela 工作区**根目录**（即你这个仓的上一级）进行。openvela 使用 `build.sh` 作为统一入口，接收一个 **board config 路径**作为参数：
+安装 ESP-IDF 5.5.x 和 ESP32-P4 对应工具链，进入应用目录并加载 ESP-IDF 环境：
 
 ```bash
-# 进入 openvela 工作区根目录（你的仓的上一级）
-cd ..
-
-# 通用语法：第一个参数是 board config 路径，第二个参数可以是 menuconfig / distclean 等
-./build.sh <board-config-path> [menuconfig|distclean] [-j8]
+cd contest2026_428_zhipeihuangdi/app/hello_app
+get_idf
+idf.py set-target esp32p4
 ```
 
-> 具体的 board config 路径、目标产物、模拟器/真机部署方式请以你所在赛道的教程导航为准。本仓 `app/` `quickapp/` `board/` 三个示例骨架对应的 Kconfig 选项可通过 `menuconfig` 启用。
+如果使用 openvela 的完整工作区，请先按照对应教程加载 OpenVela 构建环境，再进行应用编译。
 
----
+### 3. 配置和编译
 
-## 五、第四步：提交作品
+```bash
+idf.py menuconfig
+idf.py build
+```
 
-1. **fork** 你的专属仓 → 开发 → `git commit` 并推送 → 向专属仓发起 **Pull Request**，可**自行 review 并合入**（无需等组委会）。
-2. **AI Coding 日志**：与 AI 工具的对话会自动记录到本机 staging（不会自动上传），需你**主动导出/打包**选定会话到仓内 `logs/` 目录后一并提交。详见[《AI Coding 日志归集与提交手册》](https://github.com/open-vela/docs/blob/dev-ai-contest-2026/zh-cn/contest_2026/ai_coding_log_guide.md)。
-3. 若需改动 **nuttx 等公共仓库**，不在本仓改，而是 fork 对应公共仓、以 PR 提交到 `dev-ai-contest-2026` 分支，由组委会 review 后合入。
+编译前请确认 `sdkconfig.defaults` 中的目标芯片、PSRAM、摄像头、ESP-Hosted C6 Wi-Fi 和显示屏配置正确。
 
-> ⏰ **提交作品截止：9 月 20 日**。截止后统一收回 push 权限，仍可查看 / clone。
->
-> 获奖后再按要求将作品 PR 至 openvela 上游对应仓库（走标准 PR + CI 流程）。
+### 4. 配置 API 密钥
 
-### 关于 PR 与 CLA
+代码不会从源码头文件读取真实 API Key，而是从 NVS 的 `api_keys` 命名空间读取。烧录前应通过项目提供的配置流程写入 SiliconFlow 和 DeepSeek Key。不要把真实密钥提交到 Git 仓库、README 或 AI 日志中。
 
-- 本仓所有改动通过 **Pull Request** 合入（分支保护强制，可自行合入自己的 PR）。
-- 首次贡献需在[**官网签署 CLA**](https://openvela.com/#/community/cla)；PR 上会自动跑 `cla/signature` 检查，在官网签署成功后，在 PR 评论 `/check-cla` 复检即可通过。
+### 5. 烧录并查看日志
 
----
+```bash
+idf.py -p <串口号> flash monitor
+```
 
-## 六、提交前：把本 README 改成你的作品说明
+启动后，机器人进入主界面并自动打开语音交互应用：
 
-本文件目前是组委会给的**使用说明书**。**作品提交前，请把它替换成你自己作品的说明**，方便评委快速了解你做了什么、怎么跑起来。建议至少包含以下内容：
+1. 点击麦克风按钮，界面显示“正在聆听”；
+2. 对机器人说话；
+3. 再次点击麦克风按钮，结束录音并识别已经采集的语音；
+4. 识别成功后进入思考状态并请求 AI 回答；
+5. 生成回答后播放语音，同时通过 UART 控制 STM32 舵机动作。
 
-```markdown
-# <你的作品名>
+### 6. STM32 联动
 
-## 一、作品简介
-<一句话/一段话说明这个作品是什么、解决什么问题、亮点在哪>
+STM32 工程使用 Keil MDK 编译，UART 参数为 `115200 8N1`：
 
-## 二、选题方向
-<快应用 / 手表应用创新 ｜ AI 硬件产品创新 ｜ 新硬件适配 ｜ 自定方向，并简述理由>
+```text
+P4 GPIO7 TX  -> STM32 PA10 RX
+P4 GPIO8 RX  -> STM32 PA9 TX
+P4 GND       -> STM32 GND
+STM32 PB5    -> MG3115 信号线
+STM32 PB4    -> MG995 信号线
+```
 
-## 三、目录结构
-<列出你这个仓里各目录/文件的作用，例如：>
-- `app/xxx/`        — <说明>
-- `board/xxx/`      — <说明>
-- `quickapp/xxx/`   — <说明>
-- `logs/`           — AI Coding 日志
-- `docs/` 或其他    — <说明>
-
-## 四、运行方式
-<拉取工程后，如何编译、烧录/部署、运行的完整步骤；最好能让评委照着一步步复现>
+舵机电源建议使用独立 5V 电源，并与控制板共地。舵机动作由 UART 协议和语音交互状态触发：聆听时回中，思考时抬头偏转，回答时点头，异常时回中。
 
 ## 五、AI Coding 使用说明
-<说明本作品如何借助 AI 辅助开发：
-- 在需求拆解 / 方案设计 / 编码 / 调试 / 文档等环节如何与 AI 协作；
-- AI 对开发效率或质量带来的实际帮助。
-完整对话日志见 logs/ 目录>
-```
 
-> 提示：将会根据「作品本身 + 你的 README 说明 + `logs/` 里的 AI Coding 日志」来理解和评估你的作品，README 写清楚很重要。
+本作品在需求分析、协议设计、代码实现、故障排查和文档整理阶段使用了 Codex 与 OpenCode 辅助开发：
 
----
+- 在需求拆解阶段，分析 ESP32-P4、STM32、UART、舵机和语音交互之间的职责划分；
+- 在方案设计阶段，确定 UART 帧格式、CRC 校验、舵机编号、动作命令和心跳机制；
+- 在编码阶段，协助修改 P4 的 UART 组件、语音交互状态机、API 密钥存储和 STM32 的协议解析、PWM 舵机控制；
+- 在调试阶段，定位蓝屏、UART 乱码、舵机引脚复用、录音停止后不上传以及 TTS 延迟等问题；
+- 在文档阶段，整理工程目录、运行步骤、硬件接线和 AI 使用说明。
 
-## 附：仓库命名规范
+AI 主要帮助快速梳理跨芯片通信链路、检查协议两端的一致性、定位状态机问题，并减少了重复查找代码和整理文档的时间。所有硬件接线、烧录和实际运行结果仍需要在真实开发板上验证。
 
-`contest2026_<编号>_<队伍名>` — 编号三位零填充；队名 slug（全小写、英文/拼音、连字符）。例：`contest2026_428_zhipeihuangdi`。
-（仓库由组委会统一创建，**每队仅一个仓**，无需自行命名。）
+完整 Codex 和 OpenCode 对话日志见 [`logs/`](logs/) 目录。
+
+
+Bilibili 演示视频：
+https://www.bilibili.com/video/BV1CQez66EQK
