@@ -1,3 +1,15 @@
+# ESP32-P4 多模态 AI 机器人
+
+## 项目演示
+
+本项目基于 ESP32-P4 开发，实现视觉感知、语音交互、AI 对话和机器人表情/动作控制。
+
+### Bilibili 演示视频
+
+[点击观看项目演示视频](https://www.bilibili.com/video/BV1CQez66EQK)
+
+---
+
 # contest2026_428_zhipeihuangdi
 
 👋 欢迎参加 **2026 首届 openvela AI 硬件开发者大赛**！
